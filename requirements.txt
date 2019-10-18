@@ -1,0 +1,12 @@
+beautifulsoup4==4.8.1
+bs4==0.0.1
+certifi==2019.9.11
+chardet==3.0.4
+idna==2.8
+lxml==4.4.1
+python-dateutil==2.8.0
+-e git+https://github.com/bigg215/pytube.git@fac934b149bc2d49ea54d566e0639d9b4c2862d2#egg=pytube
+requests==2.22.0
+six==1.12.0
+soupsieve==1.9.4
+urllib3==1.25.6
