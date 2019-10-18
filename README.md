@@ -8,7 +8,7 @@ While running, this script will monitor a YouTube channel and archive any newly 
 2. Install requirements.  
   `pip install -r requirements.txt`
 3. Run Python
-4. `from feed_watcher import FeedWatcher`
+4. `from feed_watcher import FeedWatcher`  
    `FeedWatcher.watch(channel_id, last_update=None, check_interval=60, output_path=None)`
     * *channel_id* = The channel ID, i.e `UCJKt_QVDyUbqdm3ag_py2eQ`. Required.
     * *last_update* = The minimum datetime to check for new updates. If not provided, the script will use the updated date of the last uploaded video.
