@@ -6,7 +6,8 @@ import dateutil.parser
 from time import sleep
 
 XML_PARSER = 'lxml-xml'
-YOUTUBE_FEED_URL = 'https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}'
+YOUTUBE_FEED_URL_CHANNEL = 'https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}'
+YOUTUBE_FEED_URL_USER = 'https://www.youtube.com/feeds/videos.xml?user={username}'
 YOUTUBE_VIDEO_URL = 'https://www.youtube.com/watch?v={video_id}'
 
 
@@ -15,13 +16,13 @@ class FeedWatcher():
      def __init__(self):
          pass
 
-     def watch(self, channel_id, last_update=None, check_interval=60, output_path=None):
+     def watch(self, channel_id=None, username=None, last_update=None, check_interval=60, output_path=None):
           """Watches a YouTube feed given a provided channel_id in a very dumb single-threaded manner. Sleeps for check_interval 
           seconds before trying again. Checks every minute by default. Script must be terminated manually."""
-          # TODO Get channel id from user name if provided
-          feed_url = YOUTUBE_FEED_URL.format(channel_id=channel_id)
+          feed_url = self.get_feed_url(channel_id, username)
+          latest_entry = self.get_most_recent_video(feed_url)
+          print('Found channel: {name}'.format(name=latest_entry.find('author').find('name').contents[0]))
           if last_update is None:
-               latest_entry = self.get_most_recent_video(feed_url)
                last_update = self.get_video_updated_date(latest_entry)
           print('Last update was: %s' % last_update)
           print('Starting to watch...')
@@ -35,7 +36,16 @@ class FeedWatcher():
                      last_update = self.get_video_updated_date(latest_entry)
                else:
                      print('Nothing new.')
-                   
+     
+     def get_feed_url(self, channel_id, username):
+          """Returns the feed url given a channel_id or username, prioritizing channel_id. Raises exception if both are None."""
+          if channel_id is not None:
+               return YOUTUBE_FEED_URL_CHANNEL.format(channel_id=channel_id)
+          elif username is not None:
+               return YOUTUBE_FEED_URL_USER.format(username=username)
+          else:
+               raise Exception('channel_id or username required')
+
      def get_most_recent_video(self, feed_url):
           """Querys the feed for a YouTube channel and returns a soupified XML entry for the most recently updated video."""
           response = requests.get(feed_url)
